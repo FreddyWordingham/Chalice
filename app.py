@@ -1,4 +1,4 @@
-from chalice import BadRequestError, Chalice
+from chalice import BadRequestError, Chalice, NotFoundError
 
 
 app = Chalice(app_name="helloworld")
@@ -35,20 +35,41 @@ def models(model):
     try:
         return {"model": MACHINE_LEARNING_MODELS[model]}
     except KeyError:
-        raise BadRequestError(f"Unknown model {model}, valid choices are: {", ".join(MACHINE_LEARNING_MODELS)}.")
+        raise BadRequestError(f"Unknown model {model}, valid choices are: {', '.join(MACHINE_LEARNING_MODELS)}.")
     except Exception as err:
         raise BadRequestError(f"Error occurred: {err}")
 
 
-@app.route("/my_route", methods=["POST"])
-def my_route_post():
-    pass
+OBJECTS = {}
 
 
-@app.route("/my_route", methods=["PUT"])
-def my_route_put():
-    pass
+# app.current_request.query_params - A dict of the query params for the request.
+# app.current_request.headers - A dict of the request headers.
+# app.current_request.uri_params - A dict of the captured URI params.
+# app.current_request.method - The HTTP method (as a string).
+# app.current_request.json_body - The parsed JSON body (json.loads(raw_body))
+# app.current_request.raw_body - The raw HTTP body as bytes.
+# app.current_request.context - A dict of additional context information
+# app.current_request.stage_vars - Configuration for the API Gateway stage
 
+
+@app.route("/objects/{key}", methods=["GET", "PUT"])
+def crud(key):
+    request = app.current_request
+
+    if request.method == "PUT":
+        OBJECTS[key] = request.json_body
+
+    elif request.method == "GET":
+        try:
+            return {key: OBJECTS[key]}
+        except KeyError:
+            raise NotFoundError(key)
+
+
+@app.route("/introspect")
+def introspect():
+    return app.current_request.to_dict()
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to "/".
