@@ -1,4 +1,4 @@
-from chalice import BadRequestError, Chalice, NotFoundError
+from chalice import BadRequestError, Chalice, NotFoundError, Response
 
 
 app = Chalice(app_name="helloworld")
@@ -70,6 +70,13 @@ def crud(key):
 @app.route("/introspect")
 def introspect():
     return app.current_request.to_dict()
+
+
+@app.route("/bye")
+def bye():
+    return Response(body="Goodbye, world!",
+                    status_code=200,
+                    headers={"Content-Type": "text/plain"})
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to "/".
