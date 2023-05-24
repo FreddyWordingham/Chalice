@@ -6,8 +6,20 @@ app = Chalice(app_name="helloworld")
 
 @app.route("/")
 def index():
-    return {"hello": "world"}
+    return testy()
+    # return {"hello": "world"}
 
+
+@app.route("/testy")
+def testy():
+    return {"hello": "test"}
+
+
+@app.route("/add/{a}/{b}")
+def add(a, b):
+    a = int(a)
+    b = int(b)
+    return {"sum": a + b}
 
 # The view function above will return {"hello": "world"}
 # whenever you make an HTTP GET request to "/".
