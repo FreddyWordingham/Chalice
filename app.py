@@ -35,9 +35,19 @@ def models(model):
     try:
         return {"model": MACHINE_LEARNING_MODELS[model]}
     except KeyError:
-        raise BadRequestError(f"Unknown model {model}, valid choices are: {', '.join(MACHINE_LEARNING_MODELS)}.")
+        raise BadRequestError(f"Unknown model {model}, valid choices are: {", ".join(MACHINE_LEARNING_MODELS)}.")
     except Exception as err:
         raise BadRequestError(f"Error occurred: {err}")
+
+
+@app.route("/my_route", methods=["POST"])
+def my_route_post():
+    pass
+
+
+@app.route("/my_route", methods=["PUT"])
+def my_route_put():
+    pass
 
 
 # The view function above will return {"hello": "world"}
