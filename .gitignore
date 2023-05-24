@@ -163,3 +163,7 @@ cython_debug/
 ## Freddy ##
 # Locks
 *.lock
+
+# Chalice
+.chalice/deployments/
+.chalice/venv/
